@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useUser } from '../../context/UserContext';  // Importing UserContext
+import { useUser } from '../../context/UserContext';
 import styles from '../../assets/styles/style';
 
 const LoginScreen = () => {
@@ -9,11 +9,17 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const { login } = useUser();  // Using context to handle login
+  const { login } = useUser();  // Access login function
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  // Clear error when user starts typing in email or password fields
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    if (error) setError(''); // Clear error on change
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    if (error) setError(''); // Clear error on change
   };
 
   const handleLogin = () => {
@@ -22,31 +28,21 @@ const LoginScreen = () => {
       return;
     }
 
-    if (!validateEmail(email)) {
-      setError('Invalid email format');
-      return;
+    const success = login(email, password);  // Try logging in
+    if (success) {
+      setError(''); // Clear the error on successful login
+      Alert.alert('Login Successful', `Logged in as ${email}`);
+      router.push('/home');  // Navigate to home screen
+    } else {
+      setError('Invalid email or password');
     }
-
-    if (password.length < 6) {
-      setError('Password should be at least 6 characters');
-      return;
-    }
-
-    setError('');
-    login(email);  // Log user in using context
-    Alert.alert('Login Successful', `Logged in as ${email}`);
-    router.push('/home');
   };
 
-  // useEffect for tracking errors
   useEffect(() => {
     if (error) {
       console.log('Error:', error);
     }
   }, [error]);
-
-  // useMemo to optimize email validation
-  const isEmailValid = useMemo(() => validateEmail(email), [email]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +55,7 @@ const LoginScreen = () => {
           placeholder="Email"
           keyboardType="email-address"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={handleEmailChange}  // Clear error on input change
           placeholderTextColor="#888"
         />
 
@@ -68,7 +64,7 @@ const LoginScreen = () => {
           placeholder="Password"
           secureTextEntry
           value={password}
-          onChangeText={setPassword}
+          onChangeText={handlePasswordChange}  // Clear error on input change
           placeholderTextColor="#888"
         />
 

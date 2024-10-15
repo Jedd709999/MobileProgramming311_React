@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useUser } from '../../context/UserContext';
 import styles from '../../assets/styles/style';
 
 const SignUpScreen = () => {
@@ -9,6 +10,7 @@ const SignUpScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { signup } = useUser();  // Access signup function
 
   const handleSignUp = () => {
     if (email === '' || password === '' || confirmPassword === '') {
@@ -21,11 +23,15 @@ const SignUpScreen = () => {
       return;
     }
 
-    Alert.alert('Sign Up Successful', `Signed up as ${email}`);
-    router.replace('/');
+    const success = signup(email, password);  // Register user
+    if (success) {
+      Alert.alert('Sign Up Successful', `Signed up as ${email}`);
+      router.replace('/');  // Navigate to login screen
+    } else {
+      setError('User already exists');
+    }
   };
 
-  // useEffect to handle side effects like errors
   useEffect(() => {
     if (error) {
       console.log('Sign up error:', error);

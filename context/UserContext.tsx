@@ -1,38 +1,50 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// Define the shape of the user object and the context functions
 interface User {
   email: string;
+  password: string;
 }
 
 interface UserContextType {
   user: User | null;
-  login: (email: string) => void;
+  login: (email: string, password: string) => boolean;
   logout: () => void;
+  signup: (email: string, password: string) => boolean;
 }
 
-// Create the context with default values
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [registeredUsers, setRegisteredUsers] = useState<User[]>([]);
 
-  const login = (email: string) => {
-    setUser({ email }); // Set the user data upon login
+  const signup = (email: string, password: string) => {
+    const userExists = registeredUsers.some(user => user.email === email);
+    if (userExists) return false; // Sign up fails if user already exists
+    setRegisteredUsers([...registeredUsers, { email, password }]);
+    return true;
+  };
+
+  const login = (email: string, password: string) => {
+    const registeredUser = registeredUsers.find(user => user.email === email && user.password === password);
+    if (registeredUser) {
+      setUser(registeredUser);
+      return true; // Login successful
+    }
+    return false; // Login failed
   };
 
   const logout = () => {
-    setUser(null); // Clear the user data upon logout
+    setUser(null);
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout }}>
+    <UserContext.Provider value={{ user, login, logout, signup }}>
       {children}
     </UserContext.Provider>
   );
 };
 
-// Custom hook to use the UserContext in any component
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
