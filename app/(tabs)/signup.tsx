@@ -17,7 +17,7 @@ const SignUpScreen = () => {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const validateEmail = (email) => {
+  const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };

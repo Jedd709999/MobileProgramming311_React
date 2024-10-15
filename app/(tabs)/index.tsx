@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   SafeAreaView,
   TextInput,
@@ -10,13 +10,20 @@ import {
 import { useRouter } from 'expo-router';
 import styles from '../../assets/styles/style';
 
+
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const validateEmail = (email) => {
+
+  useEffect(() => {
+    console.log('LoginScreen component mounted');
+  }, []);
+
+
+  const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -41,7 +48,9 @@ const LoginScreen = () => {
     Alert.alert('Login Successful', `Logged in as ${email}`);
     router.push('/home');
   };
-
+  
+  const isValidEmail = useMemo(() => validateEmail(email), [email]);
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.form}>
@@ -73,6 +82,8 @@ const LoginScreen = () => {
         <TouchableOpacity onPress={() => router.push('/signup')} style={styles.signUpLink}>
           <Text style={styles.signUpText}>Don't have an account? Sign Up</Text>
         </TouchableOpacity>
+
+        {isValidEmail ? <Text style={styles.validEmail}>Email is valid!</Text> : null}
       </View>
     </SafeAreaView>
   );
