@@ -38,6 +38,11 @@ export default StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
+  validEmail: {
+    color: '#fff',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
   button: {
     backgroundColor: '#4CAF50',
     borderRadius: 8,
