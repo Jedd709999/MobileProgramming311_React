@@ -1,12 +1,5 @@
-import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  View,
-  Alert,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, TextInput, TouchableOpacity, Text, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import styles from '../../assets/styles/style';
 
@@ -17,24 +10,9 @@ const SignUpScreen = () => {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
   const handleSignUp = () => {
     if (email === '' || password === '' || confirmPassword === '') {
       setError('Please fill in all fields');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setError('Invalid email format');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password should be at least 6 characters');
       return;
     }
 
@@ -43,10 +21,16 @@ const SignUpScreen = () => {
       return;
     }
 
-    setError('');
-    Alert.alert('Sign Up Successful', `Account created for ${email}`);
+    Alert.alert('Sign Up Successful', `Signed up as ${email}`);
     router.replace('/');
   };
+
+  // useEffect to handle side effects like errors
+  useEffect(() => {
+    if (error) {
+      console.log('Sign up error:', error);
+    }
+  }, [error]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,7 +72,6 @@ const SignUpScreen = () => {
         <TouchableOpacity onPress={() => router.replace('/')} style={styles.signUpLink}>
           <Text style={styles.signUpText}>Already have an account? Log In</Text>
         </TouchableOpacity>
-
       </View>
     </SafeAreaView>
   );
