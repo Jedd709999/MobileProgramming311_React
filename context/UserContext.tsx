@@ -1,40 +1,62 @@
+// usercontext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User as FirebaseUser } from 'firebase/auth';
+import app from '../config/firebaseConfig'; // Import Firebase config
+
 
 interface User {
   email: string;
-  password: string;
 }
 
 interface UserContextType {
   user: User | null;
-  login: (email: string, password: string) => boolean;
-  logout: () => void;
-  signup: (email: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  signup: (email: string, password: string) => Promise<boolean>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [registeredUsers, setRegisteredUsers] = useState<User[]>([]);
+  const auth = getAuth(app); // Initialize Firebase Auth
 
-  const signup = (email: string, password: string) => {
-    const userExists = registeredUsers.some(user => user.email === email);
-    if (userExists) return false; // Sign up fails if user already exists
-    setRegisteredUsers([...registeredUsers, { email, password }]);
-    return true;
-  };
 
-  const login = (email: string, password: string) => {
-    const registeredUser = registeredUsers.find(user => user.email === email && user.password === password);
-    if (registeredUser) {
-      setUser(registeredUser);
-      return true; // Login successful
+  const signup = async (email: string, password: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      setUser({ email: userCredential.user.email! }); // Save the user
+      return true;
+    } catch (error: any) {
+      console.error("Signup error:", error); // Log the full error to debug
+
+      // Check the error code returned by Firebase
+      if (error.code === 'auth/email-already-in-use') {
+        throw new Error('User already exists with this email.');
+      } else if (error.code === 'auth/invalid-email') {
+        throw new Error('Invalid email address.');
+      } else if (error.code === 'auth/weak-password') {
+        throw new Error('Password should be at least 6 characters.');
+      } else {
+        throw new Error('Registration failed. Please try again.');
+      }
     }
-    return false; // Login failed
   };
 
-  const logout = () => {
+
+  const login = async (email: string, password: string) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setUser({ email: userCredential.user.email! });
+      return true;
+    } catch (error) {
+      console.error("Login error:", error);
+      return false;
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
     setUser(null);
   };
 

@@ -11,24 +11,13 @@ const LoginScreen = () => {
   const router = useRouter();
   const { login } = useUser();  // Access login function
 
-  // Clear error when user starts typing in email or password fields
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
-    if (error) setError(''); // Clear error on change
-  };
-
-  const handlePasswordChange = (value: string) => {
-    setPassword(value);
-    if (error) setError(''); // Clear error on change
-  };
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (email === '' || password === '') {
       setError('Please fill in all fields');
       return;
     }
 
-    const success = login(email, password);  // Try logging in
+    const success = await login(email, password);  // Try logging in
     if (success) {
       setError(''); // Clear the error on successful login
       Alert.alert('Login Successful', `Logged in as ${email}`);
@@ -55,7 +44,7 @@ const LoginScreen = () => {
           placeholder="Email"
           keyboardType="email-address"
           value={email}
-          onChangeText={handleEmailChange}  // Clear error on input change
+          onChangeText={setEmail}
           placeholderTextColor="#888"
         />
 
@@ -64,7 +53,7 @@ const LoginScreen = () => {
           placeholder="Password"
           secureTextEntry
           value={password}
-          onChangeText={handlePasswordChange}  // Clear error on input change
+          onChangeText={setPassword}
           placeholderTextColor="#888"
         />
 

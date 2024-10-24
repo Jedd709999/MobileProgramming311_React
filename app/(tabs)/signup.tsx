@@ -12,7 +12,7 @@ const SignUpScreen = () => {
   const router = useRouter();
   const { signup } = useUser();  // Access signup function
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (email === '' || password === '' || confirmPassword === '') {
       setError('Please fill in all fields');
       return;
@@ -23,14 +23,17 @@ const SignUpScreen = () => {
       return;
     }
 
-    const success = signup(email, password);  // Register user
-    if (success) {
-      Alert.alert('Sign Up Successful', `Signed up as ${email}`);
-      router.replace('/');  // Navigate to login screen
-    } else {
-      setError('User already exists');
+    try {
+      const success = await signup(email, password); // Use await and try-catch
+      if (success) {
+        Alert.alert('Sign Up Successful', `Signed up as ${email}`);
+        router.replace('/'); // Navigate to login screen
+      }
+    } catch (error: any) {
+      setError(error.message); // Display the specific error message
     }
   };
+
 
   useEffect(() => {
     if (error) {
