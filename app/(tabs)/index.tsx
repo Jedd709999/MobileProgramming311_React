@@ -9,17 +9,16 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const { login } = useUser();  // Access login function
+  const { login } = useUser();
 
-  // Clear error when user starts typing in email or password fields
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    if (error) setError(''); // Clear error on change
+    if (error) setError('');
   };
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    if (error) setError(''); // Clear error on change
+    if (error) setError('');
   };
 
   const handleLogin = () => {
@@ -28,15 +27,18 @@ const LoginScreen = () => {
       return;
     }
 
-    const success = login(email, password);  // Try logging in
+    const success = login(email, password);  
     if (success) {
-      setError(''); // Clear the error on successful login
+      setError('');
       Alert.alert('Login Successful', `Logged in as ${email}`);
-      router.push('/home');  // Navigate to home screen
-    } else {
-      setError('Invalid email or password');
-    }
-  };
+      setEmail('');
+        setPassword('');
+        setError('');
+        router.replace('/home');
+      } else {
+        setError('Invalid email or password');
+      }
+    };
 
   useEffect(() => {
     if (error) {

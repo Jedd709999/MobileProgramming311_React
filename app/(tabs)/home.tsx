@@ -1,15 +1,16 @@
+// Modified HomeScreen to include a "View Registered Users" button
 import React from 'react';
 import { SafeAreaView, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useUser } from '../../context/UserContext';  // Importing UserContext
+import { useUser } from '../../context/UserContext';
 import styles from '../../assets/styles/style';
 
 const HomeScreen = () => {
   const router = useRouter();
-  const { user, logout } = useUser();  // Accessing user context
+  const { user, logout } = useUser();
 
   const handleLogout = () => {
-    logout();  // Using context to log out
+    logout();
     Alert.alert('Logged out');
     router.replace('/');
   };
@@ -21,6 +22,10 @@ const HomeScreen = () => {
 
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
           <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/registeredUsers')}>
+          <Text style={styles.buttonText}>View Registered Users</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

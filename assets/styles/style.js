@@ -44,12 +44,12 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+      backgroundColor: '#4CAF50',
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginBottom: 10,
+    },
   buttonText: {
     color: '#fff',
     fontSize: 16,
@@ -63,4 +63,34 @@ export default StyleSheet.create({
     color: '#4CAF50',
     fontSize: 14,
   },
+  userCard: {
+      backgroundColor: '#333',
+      padding: 10,
+      borderRadius: 8,
+      marginBottom: 10,
+  },
+  userText: {
+      color: '#fff',
+      fontSize: 14,
+  },
+    profilePicture: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      marginBottom: 10,
+      alignSelf: 'center',
+    },
+
+    imageButtonText: {
+      color: '#fff',
+      fontWeight: 'bold',
+    },
+
+    userProfileImage: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      marginBottom: 5,
+    },
+
 });

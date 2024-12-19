@@ -1,15 +1,23 @@
+// Modified UserContext to include additional user details
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface User {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
+  birthday: string;
+  gender: string;
+  mobileNumber: string;
+  profilePicture: string | null; // Add profile picture property
 }
 
 interface UserContextType {
   user: User | null;
+  registeredUsers: User[];
   login: (email: string, password: string) => boolean;
   logout: () => void;
-  signup: (email: string, password: string) => boolean;
+  signup: (details: Omit<User, 'user'>) => boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -18,10 +26,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [registeredUsers, setRegisteredUsers] = useState<User[]>([]);
 
-  const signup = (email: string, password: string) => {
-    const userExists = registeredUsers.some(user => user.email === email);
-    if (userExists) return false; // Sign up fails if user already exists
-    setRegisteredUsers([...registeredUsers, { email, password }]);
+  const signup = (details: Omit<User, 'user'>) => {
+    const userExists = registeredUsers.some(user => user.email === details.email);
+    if (userExists) return false;
+    setRegisteredUsers([...registeredUsers, details]);
     return true;
   };
 
@@ -29,9 +37,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const registeredUser = registeredUsers.find(user => user.email === email && user.password === password);
     if (registeredUser) {
       setUser(registeredUser);
-      return true; // Login successful
+      return true;
     }
-    return false; // Login failed
+    return false;
   };
 
   const logout = () => {
@@ -39,7 +47,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout, signup }}>
+    <UserContext.Provider value={{ user, registeredUsers, login, logout, signup }}>
       {children}
     </UserContext.Provider>
   );

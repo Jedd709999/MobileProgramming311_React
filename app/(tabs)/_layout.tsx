@@ -13,6 +13,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
+        tabBarStyle: { display: 'none' },
       }}>
       <Tabs.Screen
         name="index"
@@ -31,15 +32,26 @@ export default function TabLayout() {
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
         }}
-      /><Tabs.Screen
-                name="home"
-                options={{
-                  title: 'Home',
-                  tabBarIcon: ({ color, focused }) => (
-                    <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-                  ),
-                }}
-              />
+      />
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="registeredUser"
+        options={{
+          title: 'RegisteredUsersScreen',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          ),
+        }}
+      />
+
     </Tabs>
   );
 }
